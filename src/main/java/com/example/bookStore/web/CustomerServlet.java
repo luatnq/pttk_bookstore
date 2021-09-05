@@ -2,9 +2,11 @@ package com.example.bookStore.web;
 
 import com.example.bookStore.dao.AccountDAO;
 import com.example.bookStore.dao.CustomerDAO;
+import com.example.bookStore.dao.impl.AccountDAOImpl;
+import com.example.bookStore.dao.impl.CustomerDAOImpl;
 import com.example.bookStore.model.Account;
 import com.example.bookStore.model.Customer;
-import lombok.SneakyThrows;
+import lombok.RequiredArgsConstructor;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -16,14 +18,15 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet("/")
+@RequiredArgsConstructor
 public class CustomerServlet extends HttpServlet {
     private CustomerDAO customerDAO;
     private AccountDAO accountDAO;
 
     public void init() throws ServletException {
         super.init();
-        customerDAO = new CustomerDAO();
-        accountDAO = new AccountDAO();
+        customerDAO = new CustomerDAOImpl();
+        accountDAO = new AccountDAOImpl();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -87,5 +90,7 @@ public class CustomerServlet extends HttpServlet {
             throws IOException, ServletException{
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+
+        accountDAO.checkLogin(username, password);
     }
 }
