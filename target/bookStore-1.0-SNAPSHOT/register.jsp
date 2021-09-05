@@ -2,11 +2,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Register</title>
 </head>
 <body>
 <div align="center">
-    <h1>Employee Register Form</h1>
+    <h1>Register Form</h1>
     <form action="<%= request.getContextPath() %>/insert" method="post">
         <table style="with: 80%">
             <tr>

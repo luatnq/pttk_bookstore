@@ -25,7 +25,16 @@
             </tr>
         </table>
         <input type="submit" value="Submit"/>
+
     </form>
+    <c:if test ="${not empty message}">
+        <div class="alert alert-${alert}">
+            ${message}
+        </div>
+    </c:if>
+    <div class="container text-left">
+        <a href="<%=request.getContextPath()%>/register" class="btn btn-success">Register</a>
+    </div>
 </div>
 </body>
 </html>

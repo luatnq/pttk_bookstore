@@ -16,10 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Objects;
 
 @WebServlet("/")
-@RequiredArgsConstructor
 public class CustomerServlet extends HttpServlet {
+
+    private final String LOGIN_FAIL = "Đăng nhập không thành công";
+    private final String USER_EXIST = "Tài khoản đã tồn tại";
     private CustomerDAO customerDAO;
     private AccountDAO accountDAO;
 
@@ -42,11 +45,11 @@ public class CustomerServlet extends HttpServlet {
                 case "/insert":
                     this.insertCustomer(request, response);
                     break;
-                case "/login":
-                    this.showLoginForm(request, response);
-                    break;
                 case "/auth":
                     this.login(request, response);
+                default:
+                    this.showLoginForm(request, response);
+                    break;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -65,21 +68,30 @@ public class CustomerServlet extends HttpServlet {
     }
 
     private void insertCustomer(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException{
+            throws SQLException, ServletException, IOException {
         String fullName = request.getParameter("fullName");
         String phoneNumber = request.getParameter("phoneNumber");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         Customer newCustomer = new Customer(fullName, phoneNumber);
 
-        customerDAO.createCustomer(newCustomer);
-        Customer cus = customerDAO.getCustomerByPhoneNumber(phoneNumber);
-        newCustomer.setId(cus.getId());
-        Account account = new Account();
-        account.setUsername(username);
-        account.setPassword(password);
-        newCustomer.setAccount(account);
-        accountDAO.createAccount(newCustomer);
+        Account accountExist = accountDAO.getUsername(username);
+        if (Objects.nonNull(accountExist.getId())){
+            request.setAttribute("message",USER_EXIST);
+            request.setAttribute("alert","fail");
+        }
+        else {
+            customerDAO.createCustomer(newCustomer);
+            Customer cus = customerDAO.getCustomerByPhoneNumber(phoneNumber);
+            newCustomer.setId(cus.getId());
+            Account account = new Account();
+            account.setUsername(username);
+            account.setPassword(password);
+            newCustomer.setAccount(account);
+            accountDAO.createAccount(newCustomer);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("login.jsp");
+            dispatcher.forward(request, response);
+        }
     }
 
     private void showLoginForm(HttpServletRequest request, HttpServletResponse response)
@@ -93,7 +105,10 @@ public class CustomerServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         boolean auth = accountDAO.checkLogin(username, password);
-
+        if (!auth){
+            request.setAttribute("message",LOGIN_FAIL);
+            request.setAttribute("alert","fail");
+        }
         int a = 0;
     }
 }

@@ -8,11 +8,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Login</title>
 </head>
 <body>
 <div align="center">
-    <h1>Employee Login Form</h1>
+    <h1>Login Form</h1>
     <form action="<%=request.getContextPath()%>/auth" method="post">
         <table style="with: 100%">
             <tr>
@@ -23,10 +23,18 @@
                 <td>Password</td>
                 <td><input type="password" name="password"/></td>
             </tr>
-
         </table>
         <input type="submit" value="Submit"/>
+        <button
     </form>
+    <c:if test ="${not empty message}">
+        <div class="alert alert-${alert}">
+            ${message}
+        </div>
+    </c:if>
+    <div class="container text-left">
+        <a href="<%=request.getContextPath()%>/register" class="btn btn-success">Register</a>
+    </div>
 </div>
 </body>
 </html>
