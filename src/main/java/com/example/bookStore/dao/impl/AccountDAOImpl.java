@@ -13,7 +13,7 @@ import java.util.Objects;
 public class AccountDAOImpl extends DAO implements AccountDAO {
 
     private final String CREATE_ACCOUNT = "insert into account (customer_id, username, password) values (?,?,?);";
-    private final String GET_USERNAME = "select * from account where username = ?";
+    private final String GET_USERNAME = "select * from account where username = ?;";
 
     public void createAccount(Customer customer){
         try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_ACCOUNT)){
@@ -40,7 +40,7 @@ public class AccountDAOImpl extends DAO implements AccountDAO {
             preparedStatement.setString(1, username);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()){
-                account.setId(rs.getInt("id"));
+                account.setId(rs.getInt("customer_id"));
                 account.setUsername(rs.getString("username"));
                 account.setPassword(rs.getString("password"));
             }

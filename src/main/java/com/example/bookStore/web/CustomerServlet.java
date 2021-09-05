@@ -45,6 +45,8 @@ public class CustomerServlet extends HttpServlet {
                 case "/login":
                     this.showLoginForm(request, response);
                     break;
+                case "/auth":
+                    this.login(request, response);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -90,7 +92,8 @@ public class CustomerServlet extends HttpServlet {
             throws IOException, ServletException{
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+        boolean auth = accountDAO.checkLogin(username, password);
 
-        accountDAO.checkLogin(username, password);
+        int a = 0;
     }
 }
